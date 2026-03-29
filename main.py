@@ -2,6 +2,15 @@ from libs.Constants import *
 import pygame
 from libs.PlayerController import PlayerController
 
+"""
+TODO: Create a room system (each room contains an enterance and exit)
+TODO: Create an enemy and playercontroller file
+TODO: Create a bounding box system
+TODO: Create static and dynamic entities which allow for custom behavior
+TODO: Add visual elements
+TODO: Add health system and attack system
+"""
+
 
 ########################### main game################################
 # DO NOT CHANGE ANYTHING BELOW THIS LINE

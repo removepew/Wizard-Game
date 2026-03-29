@@ -1,8 +1,3 @@
-#####################################################################
-# author: Alex Martinez
-# date: 3/25/2026
-# description: game project
-#####################################################################
 import pygame
 from libs.DynamicEntity import DynamicEntity
 from libs.Constants import *
@@ -19,11 +14,14 @@ class PlayerController(DynamicEntity):
 
         if not surf:
             surfObj = pygame.image.load("./Assets/wizard.png").convert_alpha()
-            surfObj = pygame.transform.scale(surfObj, (50,75))
+            x, y = surfObj.get_size()
+            surfObj = pygame.transform.scale(surfObj, (int(x * .25), int(y * .25)))
         else:
             surfObj = surf
 
         DynamicEntity.__init__(self, "Wizard", 0, 0, False, None, surfObj)
+
+        self.size  = surfObj.get_size()
 
 
     # Custom Methods
@@ -63,13 +61,13 @@ class PlayerController(DynamicEntity):
             self.setSize()
 
         # Keep player within bounds
-        if self.x < 0:
-            self.x = 0
-        elif self.x >= WIDTH:
-            self.x = WIDTH
-        if self.y <= 0:
-            self.y = 0
-        elif self.y >= HEIGHT:
-            self.y = HEIGHT
+        if self.x - (self.size[0] / 2) < 0:
+            self.x += 1
+        elif self.x + (self.size[0] / 2) >= WIDTH:
+            self.x -= 1
+        if self.y - (self.size[1] / 2) <= 0:
+            self.y += 1
+        elif self.y + (self.size[1] / 2) >= HEIGHT:
+            self.y -= 1
 
 

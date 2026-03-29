@@ -5,13 +5,15 @@ from libs.Entity import Entity
 
 class DynamicEntity(pygame.sprite.Sprite, Entity):
 
-    def __init__(self, name, x, y, canPass, color, surf):
+    def __init__(self, name, x, y, canPass, color, surf, damageOnTouch = False):
         # Initialize parent classes
 
         pygame.sprite.Sprite.__init__(self)
         Entity.__init__(self, name, x, y, canPass)
 
         # Store the surface object for later editing
+
+        self.size  = surf.get_size()
 
         self.surf = surf
 
@@ -23,7 +25,6 @@ class DynamicEntity(pygame.sprite.Sprite, Entity):
     
         self.rect = self.surf.get_rect()
 
-        self.rect = self.surf.get_rect(center=self.rect.center)
 
     def setColor(self) -> None:
         """
@@ -70,7 +71,7 @@ class DynamicEntity(pygame.sprite.Sprite, Entity):
 
         # Set the stored values to the new value
 
-        self.size = newSize
+        self.size = (newSize, newSize)
 
         # Change the surface object to match new values and store it
 
@@ -80,6 +81,16 @@ class DynamicEntity(pygame.sprite.Sprite, Entity):
         
 
         return # Signify we are done
+    
+    def getPosition(self) -> tuple:
+        """
+        Calculates the appropriate coordinates using 
+        x, y and size and returns the result as a tuple.
+        """
+
+        # Take the current position, subtract from the size divided by 2 for both x and y
+
+        return (self.x - (self.size[0] / 2), self.y - (self.size[1] / 2))
     
     def __str__(self) -> str:
 

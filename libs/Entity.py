@@ -24,7 +24,7 @@ class Entity:
     
     def __init__(self, name: str="", x: int=0, y: int=0, canPass: bool=False):
         self.name = name
-        self.size = 1
+        self.size = (1,1)
         self.x = x
         self.y = y
         self.canPass = canPass
@@ -62,7 +62,7 @@ class Entity:
 
     @size.setter
     def size(self, newSize):
-        if newSize >= 1:    # check if it is greater than or equal to 1, otherwise do nothing
+        if newSize[0] >= 1 and newSize[1] >= 1:    # check if it is greater than or equal to 1, otherwise do nothing
             self._size = newSize
     
     @x.setter

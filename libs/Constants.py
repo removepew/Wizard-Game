@@ -11,8 +11,8 @@ from random import randint, choice
 
 
 # constants for screen size
-WIDTH = 1000
-HEIGHT = 800
+WIDTH = 800
+HEIGHT = 600
 
 # constants for colors
 RED = [0xe3, 0x1b, 0x23]
