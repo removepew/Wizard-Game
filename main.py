@@ -1,5 +1,4 @@
 from libs.Constants import *
-import pygame
 from libs.PlayerController import PlayerController
 
 """
@@ -12,14 +11,10 @@ TODO: Add health system and attack system
 """
 
 
-########################### main game################################
-# DO NOT CHANGE ANYTHING BELOW THIS LINE
-#####################################################################
-
-# Initialize pygame library and display
+# Initialize pygame library and display and clock object
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
+clock = pygame.time.Clock()
 
 # Create a person object
 p = PlayerController()
@@ -36,6 +31,9 @@ while (RUNNING):
             RUNNING = False
         elif (event.type == KEYDOWN and event.key == K_SPACE):
             print(p)
+            for projectile in p.projectiles:
+                print(projectile)
+                print(projectile.getPosition())
 
     # Otherwise, collect the list/dictionary of all the keys that were
     # pressed
@@ -45,9 +43,17 @@ while (RUNNING):
     # update themselves accordingly.
     p.update(pressedKeys)
 
+    for projectile in p.projectiles:
+        if not projectile.active:
+            p.projectiles.remove(projectile)
+        projectile.update()
+        screen.blit(projectile.surf, projectile.rect)
+
     # fill the screen with a color
     screen.fill(WHITE)
     # then transfer the person to the screen
     screen.blit(p.surf, p.getPosition())
     pygame.display.flip()
+
+    clock.tick(200)     # Throttle the loop to 200 updates a second
 

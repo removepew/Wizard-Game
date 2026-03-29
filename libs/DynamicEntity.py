@@ -1,4 +1,3 @@
-import pygame
 from random import randint, choice
 from libs.Constants import *
 from libs.Entity import Entity
