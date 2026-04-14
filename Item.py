@@ -1,33 +1,33 @@
 #####################################################################
-#   File which is the basis for all entities within the game
-#   Contains the positional data and size for an entity
-#   Additionally contains pass-through data
+# author: Alex Martinez
+# date: 3/12/2026
+# description: Item class
 #####################################################################
 
 from math import sqrt
-from libs.Constants import HEIGHT, WIDTH
+from Constants import HEIGHT, WIDTH
 
-# global Constants to restrict the maximum x and y values that an entity object
+# global Constants to restrict the maximum x and y values that a person object
 # can have.
+# Lazy
 MAX_X = WIDTH
 MAX_Y = HEIGHT
 
-# A class representing an entity. An entity can be initialized with a
+# A class representing a person. A person can be initialized with a
 # name, as well as x and y coordinates. However, there are default
-# values for all those (i.e. player 1, 0 and 0 respectively). An entity
-# also has a size which is set to 1 by default. An entity can go left, 
-# go right, go up and go down. An entity also has a string function 
-# that prints out their name location, and size. An entity also has a 
-# function that calculates the euclidean distance from another entity 
+# values for all those (i.e. player 1, 0 and 0 respectively). A person
+# also has a size which is set to 1 by default. A person can go left, 
+# go right, go up and go down. A person also has a string function 
+# that prints out their name location, and size. A person also has a 
+# function that calculates the euclidean distance from another person 
 # object.
-class Entity:
+class Item:
     
-    def __init__(self, name: str="", x: int=0, y: int=0, canPass: bool=False):
+    def __init__(self, name: str="", x: int=0, y: int=0):
         self.name = name
-        self.size = (1,1)
+        self.size = 1
         self.x = x
         self.y = y
-        self.canPass = canPass
 
     # Accessors
 
@@ -47,10 +47,6 @@ class Entity:
     def y(self) -> int:
         return self._y 
     
-    @property
-    def canPass(self) -> bool:
-         return self._canPass
-    
     # Mutators / Setters
 
     @name.setter
@@ -62,7 +58,7 @@ class Entity:
 
     @size.setter
     def size(self, newSize):
-        if newSize[0] >= 1 and newSize[1] >= 1:    # check if it is greater than or equal to 1, otherwise do nothing
+        if newSize >= 1:    # check if it is greater than or equal to 1, otherwise do nothing
             self._size = newSize
     
     @x.setter
@@ -88,11 +84,7 @@ class Entity:
 
         else:
             self._y = 0     # Default
-
-    @canPass.setter
-    def canPass(self, newValue):
-         self._canPass = newValue
-
+        
     # Custom Functions
 
     # Movement
@@ -113,20 +105,10 @@ class Entity:
             self.y = self.y + distance
 
     # Data
-    def getDistance(self, otherEntity: 'Entity') -> int:
-        return sqrt(pow((otherEntity.y - self.y), 2) + pow((otherEntity.x - self.x), 2))
-    
-    def getPosition(self) -> tuple:
-        """
-        Calculates the appropriate coordinates using 
-        x, y and size and returns the result as a tuple.
-        """
-
-        # Take the current position, subtract from the size divided by 2 for both x and y
-
-        return (self.x - (self.size / 2), self.y - (self.size / 2))
+    def getDistance(self, otherItem: 'Item'):
+        return sqrt(pow((otherItem.y - self.y), 2) + pow((otherItem.x - self.x), 2))
 
     # Default Methods
 
     def __str__(self):
-        return f"Entity({self.name}):\tsize = {self.size},\tx = {self.x}\ty = {self.y}\tcanPass = {self.canPass}"
+        return f"Person({self.name}):\tsize = {self.size},\tx = {self.x}\ty = {self.y}"

@@ -8,11 +8,12 @@
 # import libraries that you will need
 import pygame
 from random import randint, choice
+from Item import *
 
 
 # constants for screen size
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1000
+HEIGHT = 800
 
 # constants for colors
 RED = [0xe3, 0x1b, 0x23]
