@@ -2,6 +2,10 @@ import pygame
 from Constants import *
 from entities.PlayerController import PlayerController
 from entities.Enemy import Enemy
+from systems.CollisionManager import CollisionManager
+from systems.RenderManager import RenderManager
+from systems.ScoreManager import ScoreManager
+
 
 """
 TODO: Create a room system (each room contains an enterance and exit)
@@ -12,6 +16,19 @@ TODO: Add visual elements
 TODO: Add health system and attack system
 """
 
+MAX_ENEMIES = 20
+
+START_HEALTH = 3
+
+
+def flatten(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list):
+            result.extend(flatten(item))
+        else:
+            result.append(item)
+    return result
 
 # Initialize pygame library and display and clock object
 pygame.init()
@@ -22,7 +39,19 @@ clock = pygame.time.Clock()
 
 wizard = pygame.image.load('assets/wizard.png')
 
-p = PlayerController(WHITE, pygame.transform.scale(wizard, (100, 100)), projectileSurf=pygame.Surface((2, 2)))
+p = PlayerController(pygame.transform.scale(wizard, (75, 100)), projectileSurf=pygame.Surface((2, 2)))
+
+colMan = CollisionManager(WIDTH, HEIGHT)
+renMan = RenderManager(WIDTH, HEIGHT, screen, WHITE)
+scoreMan = ScoreManager()
+
+font = pygame.font.Font(None, 36)
+
+text_surface = font.render(f"Score: {scoreMan.score}, Health: {scoreMan.health}", True, (255, 255, 255))
+
+stuff_to_render = []
+
+
 RUNNING = True  # A variable to determine whether to get out of the
                 # infinite game loop
 
@@ -46,11 +75,9 @@ while (RUNNING):
     p.update(pressedKeys)
 
 
-    # fill the screen with a color
-    screen.fill(RED)
     # then transfer the person to the screen
     screen.blit(p.surf, p.getPosition())
     pygame.display.flip()
 
-    clock.tick(200)     # Throttle the loop to 200 updates a second
+    clock.tick(300)     # Throttle the loop to 300 updates a second
 

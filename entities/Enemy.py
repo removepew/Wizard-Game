@@ -23,7 +23,7 @@ class Enemy(sprite.Sprite, baseProperties):
         self.color = color
         self.surf.fill(color)
 
-        self.projectile_list = sprite.Group()
+        self.projectile_list = []
         self.projectile_timer = 0
 
         self.restriction_area = restriction_area
@@ -99,7 +99,7 @@ class Enemy(sprite.Sprite, baseProperties):
     def shootProjectile(self, direction):
         newProjectile = Projectile(self, self.projectileSurf, (self.x,self.y), direction)
 
-        self.projectile_list.add(newProjectile)
+        self.projectile_list.append(newProjectile)
 
     def setRandomPosition(self, bounds: tuple) -> None:
         """
@@ -134,4 +134,4 @@ class Enemy(sprite.Sprite, baseProperties):
 
         # Take and append the stored color value from the parent class's default __str__ function
 
-        return f"{baseProperties.__str__(self)},\tcolor = {self.color},\tPosition = ({self.x}, {self.y})"
+        return f"{baseProperties.__str__(self)},\tPosition = ({self.x}, {self.y})"

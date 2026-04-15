@@ -14,7 +14,7 @@ from .Projectile import Projectile
 
 class PlayerController(sprite.Sprite, baseProperties):
     
-    def __init__(self, color:list[int] = [0xe3, 0x1b, 0x23], surf:Surface = Surface((1, 1)), position=(0,0), projectileSurf:Surface = Surface((1,1))):
+    def __init__(self, surf:Surface = Surface((1, 1)), position=(0,0), projectileSurf:Surface = Surface((1,1))):
 
         # Initialize parent classes
 
@@ -28,14 +28,10 @@ class PlayerController(sprite.Sprite, baseProperties):
 
         self.projectileSurf = projectileSurf
 
-        # Set preset values
-
-        self.color = color
-        self.surf.fill(color)
 
         # Create a place to store created projectiles (for later rendering)
 
-        self.projectile_list = sprite.Group()
+        self.projectile_list = []
         self.projectile_timer = 0
 
     # Custom Methods
@@ -43,7 +39,7 @@ class PlayerController(sprite.Sprite, baseProperties):
     def shootProjectile(self, direction):
         newProjectile = Projectile(self, self.projectileSurf, (self.x,self.y), direction)
 
-        self.projectile_list.add(newProjectile)
+        self.projectile_list.append(newProjectile)
 
     def setSize(self) -> None:
         """
@@ -64,6 +60,9 @@ class PlayerController(sprite.Sprite, baseProperties):
 
         self.surf = transform.scale(self.surf, newSize)
         
+    def invincibility(self):
+        self.invincible = True
+        self.invincibility_timer = 800
     
     def update(self, keyLogs) -> None:
         """
@@ -86,6 +85,11 @@ class PlayerController(sprite.Sprite, baseProperties):
         # Process projectile press
 
         self.projectile_timer += 1
+
+        if self.invincibility_timer and self.invincibility_timer > 0:
+            self.invincibility_timer -= 1
+        elif self.invincibility_timer and self.invincibility <= 0:
+            self.invincible = False
 
         if keyLogs[K_SPACE]:
 
@@ -126,4 +130,4 @@ class PlayerController(sprite.Sprite, baseProperties):
 
         # Take and append the stored color value from the parent class's default __str__ function
 
-        return f"{baseProperties.__str__(self)},\tcolor = {self.color},\tPosition = ({self.x}, {self.y})"
+        return f"{baseProperties.__str__(self)},\tPosition = ({self.x}, {self.y})"
