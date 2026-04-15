@@ -1,4 +1,4 @@
-import pygame
+from pygame import sprite, Surface, transform
 # keys from pygame
 from pygame.locals import (     # just the inputs we want to read
     K_UP,
@@ -8,47 +8,42 @@ from pygame.locals import (     # just the inputs we want to read
     K_SPACE
 )
 from random import randint, choice
-from baseProperties import baseProperties
-from Projectile import Projectile
+from .baseProperties import baseProperties
+from .Projectile import Projectile
 
 
-class Person(pygame.sprite.Sprite, baseProperties):
+class PlayerController(sprite.Sprite, baseProperties):
     
-    def __init__(self, color:list[int] = [0xe3, 0x1b, 0x23], surf:pygame.Surface = pygame.Surface((1, 1)), position=(0,0)):
+    def __init__(self, color:list[int] = [0xe3, 0x1b, 0x23], surf:Surface = Surface((1, 1)), position=(0,0), projectileSurf:Surface = Surface((1,1))):
 
         # Initialize parent classes
 
-        pygame.sprite.Sprite.__init__(self)
+        sprite.Sprite.__init__(self)
         baseProperties.__init__(self, "Wizard", position[0], position[1])
 
         # Store the surface object for later editing
 
         self.surf = surf
-        self.size = self.surf.get_rect()
+        self.size = (self.surf.get_rect().width, self.surf.get_rect().height)
+
+        self.projectileSurf = projectileSurf
 
         # Set preset values
 
         self.color = color
         self.surf.fill(color)
 
+        # Create a place to store created projectiles (for later rendering)
+
+        self.projectile_list = sprite.Group()
+        self.projectile_timer = 0
+
     # Custom Methods
 
     def shootProjectile(self, direction):
-        pass
+        newProjectile = Projectile(self, self.projectileSurf, (self.x,self.y), direction)
 
-    def setColor(self) -> None:
-        """
-        Randomly selects the value to be stored in the color 
-        instance variable, and then changes the color of the 
-        surf to match that color
-        """
-        chosenColor = choice(COLORS)
-
-        self.color = chosenColor
-
-        self.surf.fill(chosenColor)
-
-        return # Signify we are done
+        self.projectile_list.add(newProjectile)
 
     def setSize(self) -> None:
         """
@@ -67,10 +62,8 @@ class Person(pygame.sprite.Sprite, baseProperties):
 
         # Change the surface object to match new values and store it
 
-        self.surf = pygame.transform.scale(self.surf, newSize)
+        self.surf = transform.scale(self.surf, newSize)
         
-
-        return # Signify we are done
     
     def update(self, keyLogs) -> None:
         """
@@ -90,11 +83,15 @@ class Person(pygame.sprite.Sprite, baseProperties):
         if keyLogs[K_RIGHT]:
             self.goRight()
 
-        # Process randomized press
+        # Process projectile press
+
+        self.projectile_timer += 1
 
         if keyLogs[K_SPACE]:
-            self.setColor()
-            self.setSize()
+
+            if self.projectile_timer >= 1000:
+                self.shootProjectile((0, 1))
+                self.projectile_timer = 0
 
     def setRandomPosition(self, bounds: tuple) -> None:
         """
@@ -112,7 +109,6 @@ class Person(pygame.sprite.Sprite, baseProperties):
         self.x = newX
         self.y = newY
         
-        return  # Signify we are done
 
     def getPosition(self) -> tuple:
         """
@@ -122,7 +118,7 @@ class Person(pygame.sprite.Sprite, baseProperties):
 
         # Take the current position, subtract from the size divided by 2 for both x and y
 
-        return (self.x - (self.size / 2), self.y - (self.size / 2))
+        return (self.x - (self.size[0] / 2), self.y - (self.size[1] / 2))
 
     # Default Methods
 

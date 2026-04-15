@@ -1,5 +1,7 @@
-from libs.Constants import *
-from libs.PlayerController import PlayerController
+import pygame
+from Constants import *
+from entities.PlayerController import PlayerController
+from entities.Enemy import Enemy
 
 """
 TODO: Create a room system (each room contains an enterance and exit)
@@ -17,7 +19,10 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 # Create a person object
-p = PlayerController()
+
+wizard = pygame.image.load('assets/wizard.png')
+
+p = PlayerController(WHITE, pygame.transform.scale(wizard, (100, 100)), projectileSurf=pygame.Surface((2, 2)))
 RUNNING = True  # A variable to determine whether to get out of the
                 # infinite game loop
 
@@ -31,9 +36,6 @@ while (RUNNING):
             RUNNING = False
         elif (event.type == KEYDOWN and event.key == K_SPACE):
             print(p)
-            for projectile in p.projectiles:
-                print(projectile)
-                print(projectile.getPosition())
 
     # Otherwise, collect the list/dictionary of all the keys that were
     # pressed
@@ -43,14 +45,9 @@ while (RUNNING):
     # update themselves accordingly.
     p.update(pressedKeys)
 
-    for projectile in p.projectiles:
-        if not projectile.active:
-            p.projectiles.remove(projectile)
-        projectile.update()
-        screen.blit(projectile.surf, projectile.rect)
 
     # fill the screen with a color
-    screen.fill(WHITE)
+    screen.fill(RED)
     # then transfer the person to the screen
     screen.blit(p.surf, p.getPosition())
     pygame.display.flip()

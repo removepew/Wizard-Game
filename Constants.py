@@ -6,9 +6,7 @@
 #####################################################################
 
 # import libraries that you will need
-import pygame
 from random import randint, choice
-from Item import *
 
 
 # constants for screen size

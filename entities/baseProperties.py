@@ -11,9 +11,9 @@ from math import sqrt
 # object.
 class baseProperties:
     
-    def __init__(self, name: str="", x: int=0, y: int=0):
+    def __init__(self, name: str="", x: int=0, y: int=0, size: tuple=(1,1)):
         self.name = name
-        self.size = 1
+        self.size = size
         self.x = x
         self.y = y
 
@@ -24,7 +24,7 @@ class baseProperties:
         return self._name
 
     @property
-    def size(self) -> float:
+    def size(self) -> tuple:
         return self._size
 
     @property
@@ -46,7 +46,7 @@ class baseProperties:
 
     @size.setter
     def size(self, newSize):
-        if newSize >= 1:    # check if it is greater than or equal to 1, otherwise do nothing
+        if newSize[0] >= 1 and newSize[1] >= 1:    # check if it is greater than or equal to 1, otherwise do nothing
             self._size = newSize
     
     @x.setter
@@ -73,6 +73,23 @@ class baseProperties:
         
     # Custom Functions
 
+    # Movement
+    def goLeft(self, distance:int = 1):
+        
+            self.x = self.x - distance
+
+    def goRight(self, distance:int = 1):
+        
+            self.x = self.x + distance
+
+    def goUp(self, distance:int = 1):
+        
+            self.y = self.y - distance
+
+    def goDown(self, distance:int = 1):
+        
+            self.y = self.y + distance
+
     # Data
     def getDistance(self, otherItem):
         return sqrt(pow((otherItem.y - self.y), 2) + pow((otherItem.x - self.x), 2))
@@ -80,4 +97,4 @@ class baseProperties:
     # Default Methods
 
     def __str__(self):
-        return f"Person({self.name}):\tsize = {self.size},\tx = {self.x}\ty = {self.y}"
+        return f"Person({self.name}):\tsize = ({self.size[0]}, {self.size[1]}),\tx = {self.x}\ty = {self.y}"

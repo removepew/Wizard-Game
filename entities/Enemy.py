@@ -1,17 +1,17 @@
-import pygame
+from pygame import sprite, Surface, transform
 from random import randint, choice
-from baseProperties import baseProperties
-from Constants import *
+from .baseProperties import baseProperties
+from .Projectile import Projectile
 
 
-class Enemy(pygame.sprite.Sprite, baseProperties):
+class Enemy(sprite.Sprite, baseProperties):
     
-    def __init__(self, color:list[int] = [0xe3, 0x1b, 0x23], surf:pygame.Surface = pygame.Surface((1, 1))):
+    def __init__(self, color:list[int] = [0xe3, 0x1b, 0x23], surf:Surface = Surface((1, 1)), position=(0,0), projectileSurf:Surface = Surface((1,1)), restriction_area=None, projectile_based=False):
 
         # Initialize parent classes
 
-        pygame.sprite.Sprite.__init__(self)
-        baseProperties.__init__(self)
+        sprite.Sprite.__init__(self)
+        baseProperties.__init__(self, "Enemy", position[0], position[1])
 
         # Store the surface object for later editing
 
@@ -23,21 +23,25 @@ class Enemy(pygame.sprite.Sprite, baseProperties):
         self.color = color
         self.surf.fill(color)
 
+        self.projectile_list = sprite.Group()
+        self.projectile_timer = 0
+
+        self.restriction_area = restriction_area
+
     # Custom Methods
 
-    def setColor(self) -> None:
+    def setColor(self, colorList:list):
         """
         Randomly selects the value to be stored in the color 
         instance variable, and then changes the color of the 
         surf to match that color
         """
-        chosenColor = choice(COLORS)
+        chosenColor = choice(colorList)
 
         self.color = chosenColor
 
         self.surf.fill(chosenColor)
 
-        return # Signify we are done
 
     def setSize(self, square=True) -> None:
         """
@@ -62,33 +66,40 @@ class Enemy(pygame.sprite.Sprite, baseProperties):
 
         # Change the surface object to match new values and store it
 
-        self.surf = pygame.transform.scale(self.surf, newSize)
+        self.surf = transform.scale(self.surf, newSize)
         
 
     
-    def update(self, keyLogs) -> None:
-        """
-        Receives as an argument a dictionary containing all the 
-        key pressed events and then updates the state of the 
-        object based on what was pressed
-        """
+    def update(self) -> None:
+        if self.restriction_area:   # are we restricted somewhere?
+            
+            x1_restriction = min((self.restriction_area[0][0], self.restriction_area[1][0]))    # always the largest
+            x2_restriction = max((self.restriction_area[0][0], self.restriction_area[1][0]))    # always the smallest
 
-        # Process directional presses
+            y1_restriction = min((self.restriction_area[0][1], self.restriction_area[1][1]))    # same
+            y2_restriction = max((self.restriction_area[0][1], self.restriction_area[1][1]))
 
-        if keyLogs[K_UP]:
-            self.goUp()
-        if keyLogs[K_DOWN]:
-            self.goDown()
-        if keyLogs[K_LEFT]:
-            self.goLeft()
-        if keyLogs[K_RIGHT]:
-            self.goRight()
+            if y1_restriction >= self.y:
+                self.goDown()
+            else:
+                self.goUp()
 
-        # Process randomized press
+            if x1_restriction < self.x:
+                self.goRight()
+            else:
+                self.goLeft()
+        
+        if self.projectile_based:
+            self.projectile_timer += 1
 
-        if keyLogs[K_SPACE]:
-            self.setColor()
-            self.setSize()
+            if self.projectile_timer >= 2000:
+                self.shootProjectile((0, 1))
+                self.projectile_timer = 0
+
+    def shootProjectile(self, direction):
+        newProjectile = Projectile(self, self.projectileSurf, (self.x,self.y), direction)
+
+        self.projectile_list.add(newProjectile)
 
     def setRandomPosition(self, bounds: tuple) -> None:
         """
@@ -106,7 +117,6 @@ class Enemy(pygame.sprite.Sprite, baseProperties):
         self.x = newX
         self.y = newY
         
-        return  # Signify we are done
 
     def getPosition(self) -> tuple:
         """
@@ -116,7 +126,7 @@ class Enemy(pygame.sprite.Sprite, baseProperties):
 
         # Take the current position, subtract from the size divided by 2 for both x and y
 
-        return (self.x - (self.size / 2), self.y - (self.size / 2))
+        return self.surf.get_rect().topleft # (self.x - (self.size / 2), self.y - (self.size / 2)) )
 
     # Default Methods
 
