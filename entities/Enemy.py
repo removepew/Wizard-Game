@@ -92,9 +92,13 @@ class Enemy(sprite.Sprite, baseProperties):
         if self.projectile_based:
             self.projectile_timer += 1
 
+            for projectile in self.projectile_list:
+                projectile.update()
+
             if self.projectile_timer >= 2000:
                 self.shootProjectile((0, 1))
                 self.projectile_timer = 0
+        
 
     def shootProjectile(self, direction):
         newProjectile = Projectile(self, self.projectileSurf, (self.x,self.y), direction)

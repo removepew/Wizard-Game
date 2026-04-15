@@ -7,6 +7,27 @@ class CollisionManager:
         self.MAX_WIDTH = MAX_WIDTH
         self.MAX_HEIGHT = MAX_HEIGHT
         self.bounds = Rect(0, 0, self.MAX_WIDTH, self.MAX_HEIGHT)
+
+    def flatten(self, lst):
+        result = []
+        for item in lst:
+            if isinstance(item, list):
+                result.extend(self.flatten(item))
+            else:
+                result.append(item)
+        return result
+
+    def cycle(self, stuff_to_check):
+        ret_list = []
+
+        ret_list[0] = self.check_player_collide(stuff_to_check[0], stuff_to_check[1])
+        
+
+        ret_list[1] = self.check_projectile_collide(stuff_to_check[0], stuff_to_check[1])
+
+        self.boundary_restrict(self.flatten(stuff_to_check))
+
+        return ret_list
         
 
     def check_player_collide(self, player_sprite, enemy_group):

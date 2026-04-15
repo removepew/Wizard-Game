@@ -9,6 +9,15 @@ class RenderManager():
         self.screen = screen
         self.defaultColor = defaultColor
 
+    def flatten(self, lst):
+        result = []
+        for item in lst:
+            if isinstance(item, list):
+                result.extend(self.flatten(item))
+            else:
+                result.append(item)
+        return result
+
     def render_step(self, stuff_to_render:list):
 
          # fill the screen with a color
@@ -20,13 +29,11 @@ class RenderManager():
             elif thing.y > self.MAX_HEIGHT or thing.y < 0:  # don't render if they arent on the screen
                 continue
             
-            self.screen.blit(thing)
+            self.screen.blit(thing.surf, (thing.getPosition()))
+
+            if thing.projectile_list:
+                for projectile in thing.projectile_list:
+                    self.screen.blit(projectile.surf, (projectile.x, projectile.y))
 
 
             
-
-    def add_to_render_queue():
-        pass
-
-    def remove_from_render_queue():
-        pass

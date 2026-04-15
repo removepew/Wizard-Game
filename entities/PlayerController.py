@@ -97,6 +97,9 @@ class PlayerController(sprite.Sprite, baseProperties):
                 self.shootProjectile((0, 1))
                 self.projectile_timer = 0
 
+        for projectile in self.projectile_list:
+            projectile.update()
+
     def setRandomPosition(self, bounds: tuple) -> None:
         """
         Updates the Person’s x and y coordinates to a randomly selected
